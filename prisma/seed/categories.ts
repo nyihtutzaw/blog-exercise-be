@@ -1,49 +1,36 @@
-import { Category, PrismaClient } from "@prisma/client";
+import { Category, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-
 
 export async function seedCategories() {
     const categories: Category[] = [
         {
             id: 1,
-            name: "Travel",
-
+            name: 'Travel',
         },
         {
             id: 2,
-            name: "Sport",
-
+            name: 'Sport',
         },
         {
             id: 2,
-            name: "Work",
-
+            name: 'Work',
         },
         {
             id: 3,
-            name: "Culture",
-
+            name: 'Culture',
         },
         {
             id: 4,
-            name: "Movie",
-
+            name: 'Movie',
         },
         {
             id: 5,
-            name: "Music",
-
+            name: 'Music',
         },
-    ]
+    ];
 
     for (const category of categories) {
-
-        const categoryByID = await prisma.category.findFirst({ where: { id: category.id } })
-        if (!categoryByID)
-            await prisma.category.create({ data: category });
+        const categoryByID = await prisma.category.findFirst({ where: { id: category.id } });
+        if (!categoryByID) await prisma.category.create({ data: category });
     }
-
-
-
-
 }
