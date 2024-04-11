@@ -1,10 +1,10 @@
 import { createServer } from './app';
+import { logger } from './libs';
 
 const port = process.env.PORT || 8000;
 
 createServer().then((result) => {
     result.listen(port, () => {
-        // eslint-disable-next-line no-console
-        console.log(`api running on ${port}`);
+        logger.info(`api running on ${port}`);
     });
 });
