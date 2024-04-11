@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2015"],
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "target": "es6",
+    "paths": {
+      "@routes": ["src/routes"],
+      "@routes/*": ["src/routes/*"],
+    }
+  },
+  "exclude": ["node_modules"],
+  "include": ["src"]
+}
