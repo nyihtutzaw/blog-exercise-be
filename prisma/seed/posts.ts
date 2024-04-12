@@ -1,35 +1,35 @@
 import { Post, PrismaClient } from '@prisma/client';
+import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-export async function seedPosts() {
-    const posts: Post[] = [
-        {
-            id: 1,
-            title: 'Travel',
-            content:
-                "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>",
-            categoryId: 1,
-            userId: 1,
+export async function seedPosts(numberOfPosts = 20) {
+    const categories = await prisma.category.findMany({});
+    const users = await prisma.user.findMany({});
+
+    const posts: Post[] = [];
+
+    for (let i = 0; i < numberOfPosts; i++) {
+        const randomCategoryId =
+            categories.length > 0 ? categories[Math.floor(Math.random() * categories.length)].id : null;
+        const randomUserId = users.length > 0 ? users[Math.floor(Math.random() * users.length)].id : null;
+
+        posts.push({
+            title: faker.lorem.sentence(),
+            content: faker.lorem.paragraphs(2, '<p>'),
+            categoryId: randomCategoryId || 1,
+            userId: randomUserId || 1,
             published: true,
             createdAt: new Date(),
             updatedAt: new Date(),
-        },
-        {
-            id: 2,
-            title: 'Travel 2',
-            content:
-                "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>",
-            categoryId: 1,
-            userId: 1,
-            published: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ];
+            id: i + 1,
+        });
+    }
 
     for (const post of posts) {
-        const postByID = await prisma.post.findFirst({ where: { id: post.id } });
-        if (!postByID) await prisma.post.create({ data: post });
+        const postByTitle = await prisma.post.findFirst({ where: { id: post.id } });
+        if (!postByTitle) {
+            await prisma.post.create({ data: post });
+        }
     }
 }
