@@ -2,12 +2,13 @@ import { redisClient, logger } from '@libs';
 
 const retrieveCache = async (req, res, next) => {
     try {
+        if (req.query.refresh) next();
+
         const cacheKey = req.originalUrl;
-        logger.info(req.originalUrl);
         const cachedData = await redisClient.get(cacheKey);
         if (cachedData) {
-            const users = JSON.parse(cachedData);
-            res.json({ data: users });
+            const data = JSON.parse(cachedData);
+            res.json({ data });
         } else {
             next();
         }

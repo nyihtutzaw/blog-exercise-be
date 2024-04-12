@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-export async function seedPosts(numberOfPosts = 20) {
+export async function seedPosts(numberOfPosts = 100) {
     const categories = await prisma.category.findMany({});
     const users = await prisma.user.findMany({});
 
@@ -22,6 +22,7 @@ export async function seedPosts(numberOfPosts = 20) {
             published: true,
             createdAt: new Date(),
             updatedAt: new Date(),
+            publishedAt: faker.date.anytime(),
             id: i + 1,
         });
     }
