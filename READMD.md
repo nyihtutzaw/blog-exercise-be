@@ -7,6 +7,6 @@ yarn db:studio or npm run db:studio to open studio for database
 
 docker
 
-docker-compose --env-file .env  up -d
-
+ sudo  docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+ 
 docker exec blog-be-app-1 npm run db:migrate & docker exec blog-be-app-1 npm run db:push & docker exec blog-be-app-1 npm run db:seed

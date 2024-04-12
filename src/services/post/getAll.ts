@@ -1,6 +1,6 @@
-import { Post, PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { Prisma } from '@libs';
+import { Post } from '@prisma/client';
 
 export async function getAllPosts(): Promise<Post[]> {
-    return await prisma.post.findMany();
+    return await Prisma.getInstance().prisma.post.findMany();
 }

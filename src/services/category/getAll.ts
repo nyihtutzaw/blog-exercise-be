@@ -1,6 +1,6 @@
-import { Category, PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { Category } from '@prisma/client';
+import { Prisma } from '@libs';
 
 export async function getAllCategories(): Promise<Category[]> {
-    return await prisma.category.findMany();
+    return await Prisma.getInstance().prisma.category.findMany();
 }

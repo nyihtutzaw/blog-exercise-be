@@ -25,5 +25,8 @@ services:
     volumes:
       - mysql-db:/var/lib/mysql
 
+  redis: 
+    image: redis
+
 volumes:
   mysql-db:
