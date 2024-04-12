@@ -20,6 +20,10 @@
       "@types/*": ["src/types/*"],
       "@services": ["src/services"],
       "@services/*": ["src/services/*"],
+      "@libs": ["src/libs"],
+      "@libs/*": ["src/libs/*"],
+      "@middlewares": ["src/middlewares"],
+      "@middlewares/*": ["src/middlewares/*"],
     }
   },
   "exclude": ["node_modules"],
