@@ -89,10 +89,23 @@ function createServer() {
   });
 }
 
+// src/libs/logger/index.ts
+var import_winston = require("winston");
+var logger = (0, import_winston.createLogger)({
+  level: "info",
+  format: import_winston.format.combine(import_winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), import_winston.format.colorize(), import_winston.format.simple()),
+  transports: [
+    new import_winston.transports.Console({
+      level: "info",
+      format: import_winston.format.combine(import_winston.format.colorize(), import_winston.format.simple())
+    })
+  ]
+});
+
 // src/index.ts
-var port = process.env.PORT || 8e3;
+var port = 3e3;
 createServer().then((result) => {
   result.listen(port, () => {
-    console.log(`api running on ${port}`);
+    logger.info(`api running on ${port}`);
   });
 });
