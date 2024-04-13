@@ -19,7 +19,7 @@ RUN npx prisma generate
 
 
 
-EXPOSE 3000
+EXPOSE 5001
 
 # run the dev app - prod is not currently Dockerised
 CMD [ "npm", "run", "dev" ]
