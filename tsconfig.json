@@ -24,6 +24,8 @@
       "@libs/*": ["src/libs/*"],
       "@middlewares": ["src/middlewares"],
       "@middlewares/*": ["src/middlewares/*"],
+      "@helpers": ["src/helpers"],
+      "@helpers/*": ["src/helpers/*"],
     }
   },
   "exclude": ["node_modules"],
