@@ -3,37 +3,28 @@ import { PaginatedResponse, ResponseType } from '@types';
 import { signUserToken } from '@helpers';
 import { User } from '@prisma/client';
 import { BaseController } from '@controllers/baseController';
-import { createUser, getUserByEmail } from '@services';
+import { createUser, getUserByEmail, getUserById } from '@services';
 import * as bcrypt from 'bcryptjs';
 import { logger } from '@libs';
+import { userResponse } from 'src/responses';
 
 class UserController extends BaseController<PaginatedResponse<User> | User> {
-    // async getAll(req: Request, res: Response<ResponseType<PaginatedResponse<User>>>) {
-    //     const query = req.query;
-    //     const data = await getAllPosts(query);
+    async get(req: Request, res: Response<ResponseType<User>>) {
+        const { id = '0' } = req.params;
 
-    //     if (data.data.length > 0) {
-    //         super.handleCache(req.originalUrl, data);
-    //     }
+        try {
+            const data = await getUserById(parseInt(id));
 
-    //     return res.send({ message: 'All Posts', data });
-    // }
+            if (data) {
+                super.handleCache(req.originalUrl, data);
+            }
 
-    // async get(req: Request, res: Response<ResponseType<Post>>) {
-    //     const { id = '0' } = req.params;
-
-    //     try {
-    //         const data = await getPost(parseInt(id));
-
-    //         if (data) {
-    //             super.handleCache(req.originalUrl, data);
-    //         }
-
-    //         return res.send({ message: 'All Posts', data });
-    //     } catch (err) {
-    //         return res.send({ message: 'Not Found' }).status(404);
-    //     }
-    // }
+            return res.send({ message: 'User', data: userResponse(data) });
+        } catch (err) {
+            logger.info(err);
+            return res.send({ message: 'Not Found' }).status(404);
+        }
+    }
 
     async register(req: Request, res: Response<ResponseType<User>>) {
         try {
@@ -45,9 +36,7 @@ class UserController extends BaseController<PaginatedResponse<User> | User> {
 
             const user = await createUser(req.body);
 
-            delete user.password;
-
-            return res.json({ message: 'Success', data: user });
+            return res.json({ message: 'Success', data: userResponse(user) });
         } catch (err) {
             logger.error(err);
             return res.status(500).send({ message: 'Internal Server Error' });
@@ -64,8 +53,6 @@ class UserController extends BaseController<PaginatedResponse<User> | User> {
 
             const passwordMatch = await bcrypt.compare(req.body.password, userByEmail.password);
 
-            delete userByEmail.password;
-
             if (!passwordMatch) return res.status(401).json({ message: "Password doesn't match" });
 
             const token = signUserToken(userByEmail);
@@ -73,7 +60,7 @@ class UserController extends BaseController<PaginatedResponse<User> | User> {
             return res.json({
                 message: 'Success',
                 data: {
-                    user: userByEmail,
+                    user: userResponse(userByEmail),
                     token,
                 },
             });
