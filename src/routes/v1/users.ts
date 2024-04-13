@@ -7,4 +7,6 @@ const usersRoutes = Router();
 usersRoutes.post('/register', validate(userRegisterValidation), UserController.register);
 usersRoutes.post('/login', validate(userLoginValidation), UserController.login);
 
+usersRoutes.get('/:id', UserController.get);
+
 export default usersRoutes;
