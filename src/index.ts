@@ -1,7 +1,7 @@
 import { createServer } from './app';
 import { logger, redisClient } from '@libs';
 
-const port = 3000;
+const port = 5001;
 
 createServer().then((result) => {
     result.listen(port, () => {

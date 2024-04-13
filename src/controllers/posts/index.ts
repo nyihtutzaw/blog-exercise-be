@@ -55,6 +55,10 @@ class PostController extends BaseController<PaginatedResponse<Post> | Post> {
                 return res.json({ message: 'Post Not Found' }).status(404);
             }
 
+            if (postByID.userId !== req.user.id) {
+                return res.json({ message: 'Unauthorized' }).status(405);
+            }
+
             const data = await updatePost(parseInt(id), updateData);
 
             return res.json({ message: 'Post Updated', data });
@@ -72,6 +76,10 @@ class PostController extends BaseController<PaginatedResponse<Post> | Post> {
 
             if (!postByID) {
                 return res.json({ message: 'Post Not Found' }).status(404);
+            }
+
+            if (postByID.userId !== req.user.id) {
+                return res.json({ message: 'Unauthorized' }).status(405);
             }
 
             await deletePost(parseInt(id));
