@@ -1,8 +1,8 @@
-import { Category } from '@prisma/client';
 import { Prisma } from '@libs';
+import { User } from '@prisma/client';
 
-export async function getAllCategories(): Promise<Category[]> {
-    return await Prisma.getInstance().prisma.category.findMany({
+export async function getAllUsers(): Promise<User[]> {
+    return await Prisma.getInstance().prisma.user.findMany({
         include: {
             _count: {
                 select: {

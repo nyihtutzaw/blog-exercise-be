@@ -31,6 +31,7 @@ model Post {
   id          Int      @id @default(autoincrement())
   title       String
   content     String   @db.LongText
+  shortContent String   @db.LongText
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
   publishedAt DateTime @default(now())

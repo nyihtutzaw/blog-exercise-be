@@ -4,6 +4,7 @@ import { PaginatedResponse, ResponseType } from '@types';
 import { Post } from '@prisma/client';
 import { BaseController } from '@controllers/baseController';
 import { logger } from '@libs';
+import { revalidateCache } from '@middlewares';
 
 class PostController extends BaseController<PaginatedResponse<Post> | Post> {
     async getAll(req: Request, res: Response<ResponseType<PaginatedResponse<Post>>>) {
@@ -37,6 +38,14 @@ class PostController extends BaseController<PaginatedResponse<Post> | Post> {
         try {
             const postData = req.body;
             const data = await createPost({ ...postData, userId: req.user.id });
+
+            revalidateCache([
+                '*users*',
+                `*posts?categoryId=${req.body.categoryId}*`,
+                '*categories*',
+                `*posts/${data.id}*`,
+            ]);
+
             return res.json({ message: 'Post Created', data });
         } catch (err) {
             logger.error(err);
@@ -61,6 +70,13 @@ class PostController extends BaseController<PaginatedResponse<Post> | Post> {
 
             const data = await updatePost(parseInt(id), updateData);
 
+            revalidateCache([
+                '*users*',
+                `*posts?categoryId=${req.body.categoryId}*`,
+                '*categories*',
+                `*posts/${data.id}*`,
+            ]);
+
             return res.json({ message: 'Post Updated', data });
         } catch (err) {
             logger.error(err);
@@ -81,8 +97,10 @@ class PostController extends BaseController<PaginatedResponse<Post> | Post> {
             if (postByID.userId !== req.user.id) {
                 return res.json({ message: 'Unauthorized' }).status(405);
             }
-
             await deletePost(parseInt(id));
+
+            revalidateCache(['*users*', `*posts?categoryId=${req.body.categoryId}*`, '*categories*', `*posts/${id}*`]);
+
             return res.json({ message: 'Post Deleted' });
         } catch (err) {
             logger.error(err);

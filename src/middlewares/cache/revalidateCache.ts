@@ -1,20 +1,24 @@
 import { redisClient, logger } from '@libs';
 
-const revalidateCache = (pattern: string) => async (_req, res, next) => {
+const revalidateCache = async (patterns: string[]) => {
     try {
-        const keys = await redisClient.keys(pattern);
+        const allKeys = [];
 
-        if (keys.length > 0) {
-            for (const key of keys) {
+        for (const pattern of patterns) {
+            const keys = await redisClient.keys(pattern);
+            allKeys.push(...keys);
+        }
+
+        if (allKeys.length > 0) {
+            for (const key of allKeys) {
                 await redisClient.del(key);
             }
+            logger.info(`Deleted ${allKeys.length} cache entries matching patterns`);
         } else {
-            logger.info('No cache entries found for posts');
+            logger.info('No cache entries found for provided patterns');
         }
-        next();
     } catch (err) {
         logger.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 

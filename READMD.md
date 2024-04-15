@@ -9,4 +9,4 @@ docker
 
  sudo  docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
  
-docker exec blog-be-app-1 npm run db:migrate & docker exec blog-be-app-1 npm run db:push & docker exec blog-be-app-1 npm run db:seed
+docker exec blog-be npm run db:migrate & docker exec blog-be npm run db:push & docker exec blog-be npm run db:seed

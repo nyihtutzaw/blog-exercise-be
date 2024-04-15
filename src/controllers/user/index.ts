@@ -1,19 +1,20 @@
 import { Response, Request } from 'express';
-import { PaginatedResponse, ResponseType } from '@types';
+import { ResponseType } from '@types';
 import { signUserToken } from '@helpers';
 import { User } from '@prisma/client';
 import { BaseController } from '@controllers/baseController';
-import { createUser, getUserByEmail, getUserById } from '@services';
+import { createUser, getAllUsers, getUserByEmail, getUserById } from '@services';
 import * as bcrypt from 'bcryptjs';
 import { logger } from '@libs';
 import { userResponse } from 'src/responses';
+import { revalidateCache } from '@middlewares';
 
-class UserController extends BaseController<PaginatedResponse<User> | User> {
+class UserController extends BaseController<User[] | User> {
     async get(req: Request, res: Response<ResponseType<User>>) {
         const { id = '0' } = req.params;
 
         try {
-            const data = await getUserById(parseInt(id));
+            const data = await getUserById(parseInt(id), true);
 
             if (data) {
                 super.handleCache(req.originalUrl, data);
@@ -26,15 +27,38 @@ class UserController extends BaseController<PaginatedResponse<User> | User> {
         }
     }
 
+    async profile(req: Request, res: Response<ResponseType<User>>) {
+        try {
+            const data = await getUserById(req.user.id);
+            return res.send({ message: 'User Profile', data: userResponse(data) });
+        } catch (err) {
+            logger.info(err);
+            return res.send({ message: 'z Not Found ' }).status(404);
+        }
+    }
+
+    async getAll(req: Request, res: Response<ResponseType<User[]>>) {
+        const data = await getAllUsers();
+
+        if (data.length > 0) {
+            super.handleCache(req.originalUrl, data);
+        }
+
+        return res.send({ message: 'All Users', data: data.map((eachData) => userResponse(eachData)) });
+    }
+
     async register(req: Request, res: Response<ResponseType<User>>) {
         try {
             const userByEmail = await getUserByEmail(req.body.email);
 
             if (userByEmail) {
-                return res.status(403).json({ message: 'Email already exist' });
+                res.statusMessage = 'Email already exist';
+                return res.status(403).send();
             }
 
             const user = await createUser(req.body);
+
+            revalidateCache('*users*');
 
             return res.json({ message: 'Success', data: userResponse(user) });
         } catch (err) {

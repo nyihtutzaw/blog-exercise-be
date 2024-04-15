@@ -9,7 +9,7 @@ postRoutes.get('/', retrieveCache, PostController.getAll);
 postRoutes.get('/:id', retrieveCache, PostController.get);
 
 postRoutes.post('/', authenticateUser, validate(createPostSchema), PostController.store);
-postRoutes.delete('/:id', PostController.delete);
-postRoutes.put('/:id', validate(createPostSchema), PostController.update);
+postRoutes.delete('/:id', authenticateUser, PostController.delete);
+postRoutes.put('/:id', authenticateUser, validate(createPostSchema), PostController.update);
 
 export default postRoutes;
