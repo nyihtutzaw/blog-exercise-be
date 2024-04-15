@@ -13,7 +13,8 @@ export async function getAllPosts(query): Promise<PaginatedResponse<Post>> {
     const paginateQuery = { skip: 0, take: limit };
 
     if (query.page && query.page > 1) {
-        paginateQuery.skip = parseInt(query.page) * limit;
+        const skip = query.page === '1' ? parseInt(query.page) : parseInt(query.page) - 1;
+        paginateQuery.skip = skip * limit;
     }
 
     if (query.categoryId) {
@@ -21,7 +22,7 @@ export async function getAllPosts(query): Promise<PaginatedResponse<Post>> {
     }
 
     const totalCount = await prisma.post.count({ where: filters });
-    const pages = totalCount / limit - 1;
+    const pages = Math.ceil(totalCount / limit);
 
     const data = await prisma.post.findMany({
         where: filters,

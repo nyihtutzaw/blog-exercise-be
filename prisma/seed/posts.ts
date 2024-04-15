@@ -17,12 +17,13 @@ export async function seedPosts(numberOfPosts = 100) {
         posts.push({
             title: faker.lorem.sentence(),
             content: faker.lorem.paragraphs(2, '<p>'),
+            shortContent: faker.lorem.sentence(100),
             categoryId: randomCategoryId || 1,
             userId: randomUserId || 1,
             published: true,
             createdAt: new Date(),
             updatedAt: new Date(),
-            publishedAt: faker.date.anytime(),
+            publishedAt: faker.date.past(),
             id: i + 1,
         });
     }
