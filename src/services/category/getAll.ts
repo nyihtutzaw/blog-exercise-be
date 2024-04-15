@@ -1,4 +1,4 @@
-import { Category } from '@prisma/client';
+import { Category, CategoryOrderByWithRelationInput } from '@prisma/client';
 import { Prisma } from '@libs';
 
 export async function getAllCategories(): Promise<Category[]> {
@@ -7,12 +7,13 @@ export async function getAllCategories(): Promise<Category[]> {
             _count: {
                 select: {
                     posts: {
-                        where: {
-                            published: true,
-                        },
+                        where: { published: true },
                     },
                 },
             },
         },
+        orderBy: {
+            _count: { posts: { sort: 'desc' } },
+        } as CategoryOrderByWithRelationInput,
     });
 }
