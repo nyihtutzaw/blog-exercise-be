@@ -28,8 +28,8 @@ export async function createServer(): Promise<Application> {
     app.use(json());
 
     const limiter = rateLimit({
-        windowMs: 15 * 60 * 1000,
-        limit: 100,
+        windowMs: 15 * 60 * 100000,
+        limit: 10000,
         legacyHeaders: false,
     });
 
