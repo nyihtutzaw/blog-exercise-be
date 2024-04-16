@@ -15,7 +15,7 @@ I request you to do production setup for testing application. It will be fast.
 5. After all the things are going well, we can see message for completing seeding.
 6. We can check localhost:5001/health to check if app is working well.
 
-### Method 2.
+#### Method 2.
 
 The first three steps will be the same. If script from step 4 is not working , we can directly start containers by docker commands as follows.
 
